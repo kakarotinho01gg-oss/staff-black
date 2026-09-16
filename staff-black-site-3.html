@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[STAFF] 𝐁𝐋𝐀𝐂𝐊 — Controle completo para Discord</title>
+<meta name="description" content="Moderação, automação, gerenciamento, segurança, tickets e patentes em uma única plataforma.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,Arial,sans-serif;background:#050505;color:#f5f5f5;line-height:1.6;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button{font:inherit}
+.container{width:min(1180px,92%);margin:auto}
+
+/* fundo */
+body:before{
+ content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;
+ background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+ background-size:55px 55px;mask-image:linear-gradient(to bottom,#000,transparent 80%);
+}
+.glow{position:absolute;border-radius:50%;filter:blur(90px);opacity:.12;pointer-events:none}
+.g1{width:420px;height:420px;background:#fff;top:80px;left:-180px}
+.g2{width:360px;height:360px;background:#aaa;top:550px;right:-150px}
+
+/* navegação */
+.nav{position:sticky;top:0;z-index:20;border-bottom:1px solid #191919;background:rgba(5,5,5,.82);backdrop-filter:blur(18px)}
+.nav-inner{height:74px;display:flex;align-items:center;justify-content:space-between;gap:25px}
+.brand{font-family:"Space Grotesk";font-weight:700;letter-spacing:-1px;font-size:20px}
+.brand span{color:#888}
+.nav-links{display:flex;gap:26px;color:#999;font-size:14px}
+.nav-links a:hover{color:#fff}
+.nav-btn{padding:11px 17px;border:1px solid #333;border-radius:10px;background:#fff;color:#050505;font-weight:800;font-size:13px}
+.menu{display:none;background:none;border:0;color:#fff;font-size:24px}
+
+/* hero */
+.hero{position:relative;padding:110px 0 85px;text-align:center}
+.badge{display:inline-flex;align-items:center;gap:8px;border:1px solid #252525;background:#0c0c0c;border-radius:999px;padding:7px 12px;color:#aaa;font-size:12px;margin-bottom:24px}
+.dot{width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 12px #fff}
+.hero h1{font-family:"Space Grotesk";font-size:clamp(45px,7vw,82px);line-height:.98;letter-spacing:-4px;max-width:920px;margin:auto}
+.hero h1 em{font-style:normal;color:#777}
+.hero p{max-width:650px;margin:25px auto;color:#999;font-size:17px}
+.actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:30px}
+.btn{padding:14px 21px;border-radius:11px;border:1px solid #292929;background:#fff;color:#050505;font-weight:800;cursor:pointer}
+.btn.secondary{background:#0c0c0c;color:#fff}
+.btn:hover{transform:translateY(-2px)}
+.hero-note{margin-top:20px;color:#666;font-size:12px}
+
+/* dashboard */
+.preview{margin:25px auto 0;border:1px solid #222;border-radius:20px;background:#0b0b0b;box-shadow:0 30px 100px rgba(0,0,0,.6);overflow:hidden;text-align:left}
+.preview-top{height:48px;border-bottom:1px solid #202020;display:flex;align-items:center;padding:0 16px;gap:7px}
+.circle{width:9px;height:9px;border-radius:50%;background:#292929}
+.preview-title{margin-left:10px;color:#777;font-size:12px}
+.preview-grid{display:grid;grid-template-columns:180px 1fr;padding:18px;gap:18px}
+.side{border:1px solid #1e1e1e;border-radius:13px;padding:14px;background:#080808}
+.side h4{font-size:11px;color:#666;margin-bottom:12px}
+.side div{padding:9px;border-radius:8px;color:#888;font-size:12px;margin-bottom:3px}
+.side .active{background:#181818;color:#fff}
+.panel{display:grid;gap:15px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.stat{border:1px solid #222;background:#0e0e0e;border-radius:12px;padding:15px}
+.stat small{color:#666;font-size:10px}.stat strong{display:block;font-size:22px;margin-top:4px}
+.cards{display:grid;grid-template-columns:1.2fr .8fr;gap:15px}
+.mini{border:1px solid #222;background:#0e0e0e;border-radius:12px;padding:18px;min-height:180px}
+.mini h3{font-size:14px;margin-bottom:15px}.bar{height:7px;background:#202020;border-radius:10px;margin:13px 0}.bar i{display:block;height:100%;background:#ddd;border-radius:10px}
+.log{display:flex;justify-content:space-between;border-bottom:1px solid #191919;padding:9px 0;font-size:11px;color:#888}.log b{color:#ddd}
+
+/* seções */
+section{padding:90px 0}
+.section-head{max-width:700px;margin-bottom:38px}
+.kicker{color:#777;text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:800}
+.section-head h2{font-family:"Space Grotesk";font-size:42px;letter-spacing:-2px;line-height:1.1;margin:10px 0}
+.section-head p{color:#888}
+
+/* recursos */
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.feature{border:1px solid #202020;background:linear-gradient(145deg,#101010,#090909);padding:24px;border-radius:16px;transition:.25s}
+.feature:hover{border-color:#3a3a3a;transform:translateY(-4px)}
+.icon{width:40px;height:40px;display:grid;place-items:center;border:1px solid #292929;border-radius:11px;background:#151515;margin-bottom:18px}
+.feature h3{font-size:16px;margin-bottom:8px}.feature p{color:#777;font-size:13px}
+
+/* sistemas */
+.system{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.system-card{border:1px solid #222;border-radius:18px;background:#0b0b0b;padding:30px;min-height:330px}
+.system-card h3{font-family:"Space Grotesk";font-size:25px;margin-bottom:8px}
+.system-card>p{color:#777;font-size:14px;margin-bottom:25px}
+.ticket-flow{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.step{border:1px solid #242424;background:#121212;border-radius:9px;padding:11px 13px;font-size:11px;color:#bbb}
+.arrow{color:#555}
+.rank{display:flex;align-items:center;justify-content:space-between;border:1px solid #222;border-radius:10px;padding:12px 14px;margin:8px 0;background:#101010}
+.rank span{color:#777;font-size:11px}.rank b{font-size:12px}
+
+/* segurança */
+.security{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.check{border:1px solid #222;background:#0b0b0b;border-radius:14px;padding:19px;display:flex;gap:13px}
+.check-icon{font-size:17px}.check h4{font-size:14px}.check p{font-size:12px;color:#777;margin-top:3px}
+
+/* cta */
+.cta{border:1px solid #292929;border-radius:22px;background:linear-gradient(135deg,#111,#080808);padding:65px 30px;text-align:center}
+.cta h2{font-family:"Space Grotesk";font-size:42px;letter-spacing:-2px}.cta p{color:#777;max-width:550px;margin:12px auto 25px}
+
+/* footer */
+footer{border-top:1px solid #1a1a1a;padding:35px 0;color:#666;font-size:12px}
+.footer-inner{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.footer-brand{color:#eee;font-weight:800}
+.footer-links{display:flex;gap:18px}
+.footer-links a:hover{color:#fff}
+
+/* responsivo */
+@media(max-width:850px){
+ .nav-links,.nav-btn{display:none}.menu{display:block}
+ .nav-links.open{display:flex;position:absolute;left:4%;right:4%;top:68px;background:#0a0a0a;border:1px solid #222;border-radius:12px;padding:15px;flex-direction:column;gap:4px}
+ .nav-links.open a{padding:10px}
+ .hero{padding-top:80px}.hero h1{letter-spacing:-2px}
+ .preview-grid{grid-template-columns:1fr}.side{display:none}
+ .stats{grid-template-columns:repeat(2,1fr)}.cards,.system,.security{grid-template-columns:1fr}
+ .feature-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+ .system-card[style*="min-height:auto"]{min-height:auto!important}
+
+ section{padding:65px 0}.section-head h2{font-size:34px}
+ .feature-grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}
+ .stat strong{font-size:18px}.hero p{font-size:15px}
+ .cta h2{font-size:32px}.footer-inner{flex-direction:column}
+}
+</style>
+</head>
+<body>
+<div class="glow g1"></div><div class="glow g2"></div>
+
+<header class="nav">
+ <div class="container nav-inner">
+  <a class="brand" href="#inicio">[STAFF] <span>𝐁𝐋𝐀𝐂𝐊</span></a>
+  <nav class="nav-links" id="navLinks">
+   <a href="#inicio">Início</a><a href="#recursos">Recursos</a><a href="#sistemas">Sistemas</a><a href="#seguranca">Segurança</a><a href="#equipe">Equipe</a><a href="#documentacao">Documentação</a>
+  </nav>
+  <a class="nav-btn" href="https://discord.com/oauth2/authorize?client_id=1549473730487517324" target="_blank" rel="noopener">Adicionar ao Discord</a>
+  <button class="menu" onclick="document.getElementById('navLinks').classList.toggle('open')" aria-label="Menu">☰</button>
+ </div>
+</header>
+
+<main id="inicio">
+<section class="hero">
+ <div class="container">
+  <div class="badge"><span class="dot"></span> Plataforma de gerenciamento para Discord</div>
+  <h1>Seu servidor.<br><em>Sob controle.</em></h1>
+  <p>Moderação, automação, tickets, segurança, gerenciamento e patentes reunidos em uma interface moderna, rápida e organizada.</p>
+  <div class="actions">
+   <a class="btn" href="https://discord.com/oauth2/authorize?client_id=1549473730487517324" target="_blank" rel="noopener">Adicionar ao Discord →</a>
+   <a class="btn secondary" href="#recursos">Explorar recursos</a>
+  </div>
+  <div class="hero-note">Interface demonstrativa • Feita para equipes e comunidades</div>
+
+  <div class="preview">
+   <div class="preview-top"><span class="circle"></span><span class="circle"></span><span class="circle"></span><span class="preview-title">STAFF BLACK / Dashboard</span></div>
+   <div class="preview-grid">
+    <aside class="side"><h4>CONTROLE</h4><div class="active">▣ Dashboard</div><div>🛡 Moderação</div><div>🎫 Tickets</div><div>🏅 Patentes</div><div>🔐 Segurança</div><div>📋 Logs</div></aside>
+    <div class="panel">
+     <div class="stats">
+      <div class="stat"><small>MEMBROS</small><strong>2.481</strong></div>
+      <div class="stat"><small>TICKETS</small><strong>18</strong></div>
+      <div class="stat"><small>AÇÕES</small><strong>347</strong></div>
+      <div class="stat"><small>STATUS</small><strong>Online</strong></div>
+     </div>
+     <div class="cards">
+      <div class="mini"><h3>Atividade do servidor</h3><div class="bar"><i style="width:72%"></i></div><div class="bar"><i style="width:48%"></i></div><div class="bar"><i style="width:84%"></i></div><div class="bar"><i style="width:61%"></i></div></div>
+      <div class="mini"><h3>Logs recentes</h3><div class="log"><b>Ticket #284</b><span>resolvido</span></div><div class="log"><b>Warn aplicado</b><span>há 2m</span></div><div class="log"><b>Novo membro</b><span>há 4m</span></div><div class="log"><b>Patente alterada</b><span>há 8m</span></div></div>
+     </div>
+    </div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section id="recursos">
+<div class="container">
+ <div class="section-head"><span class="kicker">Tudo integrado</span><h2>Ferramentas para cuidar do servidor inteiro.</h2><p>Uma central organizada para sua equipe administrar as tarefas importantes sem ficar pulando entre vários sistemas.</p></div>
+ <div class="feature-grid">
+  <article class="feature"><div class="icon">🛡️</div><h3>Moderação</h3><p>Ferramentas para organizar punições, avisos, filtros e ações da equipe.</p></article>
+  <article class="feature"><div class="icon">🤖</div><h3>Automação</h3><p>Comandos, respostas e processos automáticos para reduzir trabalho repetitivo.</p></article>
+  <article class="feature"><div class="icon">🎫</div><h3>Tickets</h3><p>Atendimento organizado do primeiro contato até o encerramento do pedido.</p></article>
+  <article class="feature"><div class="icon">🔐</div><h3>Segurança</h3><p>Controles e registros para ajudar sua equipe a acompanhar ações importantes.</p></article>
+  <article class="feature"><div class="icon">⚙️</div><h3>Gerenciamento</h3><p>Centralize configurações, equipe, permissões e rotinas administrativas.</p></article>
+  <article class="feature"><div class="icon">🏅</div><h3>Patentes</h3><p>Organize cargos e níveis hierárquicos de forma clara para sua comunidade.</p></article>
+ </div>
+</div>
+</section>
+
+<section id="sistemas">
+<div class="container">
+ <div class="section-head"><span class="kicker">Sistemas</span><h2>Fluxos que deixam tudo mais organizado.</h2><p>Visualize como os principais sistemas podem funcionar dentro do servidor.</p></div>
+ <div class="system">
+  <article class="system-card"><h3>🎫 Sistema de Tickets</h3><p>Um atendimento com começo, acompanhamento e encerramento.</p><div class="ticket-flow"><span class="step">Novo pedido</span><span class="arrow">→</span><span class="step">Em atendimento</span><span class="arrow">→</span><span class="step">Resolvido</span><span class="arrow">→</span><span class="step">Registro</span></div></article>
+  <article class="system-card"><h3>🏅 Sistema de Patentes</h3><p>Hierarquia visual para facilitar a organização da equipe.</p><div class="rank"><b>01 · Administração</b><span>Gestão</span></div><div class="rank"><b>02 · Supervisão</b><span>Coordenação</span></div><div class="rank"><b>03 · Moderação</b><span>Atendimento</span></div><div class="rank"><b>04 · Suporte</b><span>Auxílio</span></div></article>
+ </div>
+</div>
+</section>
+
+<section id="seguranca">
+<div class="container">
+ <div class="section-head"><span class="kicker">Proteção</span><h2>Segurança com informação clara.</h2><p>Tenha uma visão centralizada das ações administrativas e dos eventos do servidor.</p></div>
+ <div class="security">
+  <div class="check"><div class="check-icon">✓</div><div><h4>Registro de ações</h4><p>Acompanhe eventos administrativos em uma área de logs organizada.</p></div></div>
+  <div class="check"><div class="check-icon">✓</div><div><h4>Controle de permissões</h4><p>Estruture o acesso da equipe conforme as funções de cada cargo.</p></div></div>
+  <div class="check"><div class="check-icon">✓</div><div><h4>Monitoramento</h4><p>Visualize atividades importantes sem perder informações no meio do chat.</p></div></div>
+  <div class="check"><div class="check-icon">✓</div><div><h4>Organização da Staff</h4><p>Centralize rotinas e deixe o trabalho da equipe mais previsível.</p></div></div>
+ </div>
+</div>
+</section>
+
+<section id="equipe">
+<div class="container">
+ <div class="section-head"><span class="kicker">Equipe</span><h2>Feito para quem administra.</h2><p>Uma interface pensada para Staff, administradores, moderadores e equipes de atendimento.</p></div>
+ <div class="preview" style="margin-top:0">
+  <div class="preview-grid" style="grid-template-columns:1fr">
+   <div class="panel">
+    <div class="stats"><div class="stat"><small>STAFF ONLINE</small><strong>12</strong></div><div class="stat"><small>ATENDIMENTOS</small><strong>07</strong></div><div class="stat"><small>RESOLVIDOS</small><strong>126</strong></div><div class="stat"><small>LOGS HOJE</small><strong>593</strong></div></div>
+    <div class="mini"><h3>Central da equipe</h3><div class="log"><b>Moderador · Atendimento #284</b><span>Em andamento</span></div><div class="log"><b>Supervisor · Revisão de logs</b><span>Concluído</span></div><div class="log"><b>Suporte · Ticket #291</b><span>Aguardando</span></div></div>
+   </div>
+  </div>
+ </div>
+</div>
+</section>
+
+
+<section id="documentacao">
+<div class="container">
+ <div class="section-head"><span class="kicker">Documentação</span><h2>Saiba como usar o STAFF BLACK.</h2><p>Um ponto central para conhecer os principais sistemas e começar a usar o bot.</p></div>
+ <div class="feature-grid">
+  <article class="feature"><div class="icon">📖</div><h3>Primeiros passos</h3><p>Adicione o bot ao seu servidor, revise as permissões e configure os sistemas necessários.</p></article>
+  <article class="feature"><div class="icon">🎫</div><h3>Como abrir um ticket</h3><p>Entre no servidor oficial e use o painel de atendimento para abrir seu pedido.</p><a class="btn secondary" style="display:inline-block;margin-top:16px;padding:10px 13px;font-size:12px" href="https://discord.gg/casZHtca6" target="_blank" rel="noopener">Ir para o servidor →</a></article>
+  <article class="feature"><div class="icon">⚙️</div><h3>Configuração</h3><p>Organize canais, cargos, permissões, logs e demais sistemas de acordo com sua comunidade.</p></article>
+ </div>
+ <div style="margin-top:18px;display:grid;grid-template-columns:repeat(2,1fr);gap:14px">
+  <div class="system-card" style="min-height:auto"><h3>📜 Termos de Serviço</h3><p>Os termos oficiais serão disponibilizados aqui quando a página de termos estiver pronta.</p></div>
+  <div class="system-card" style="min-height:auto"><h3>🔒 Política de Privacidade</h3><p>A política de privacidade será disponibilizada aqui quando a página estiver pronta.</p></div>
+ </div>
+</div>
+</section>
+
+<section id="comece">
+<div class="container">
+ <div class="cta">
+  <h2>Pronto para organizar sua Staff?</h2>
+  <p>Coloque moderação, tickets, segurança, automação e gerenciamento em uma única experiência.</p>
+  <div class="actions"><a class="btn" href="https://discord.com/oauth2/authorize?client_id=1549473730487517324" target="_blank" rel="noopener">Adicionar ao Discord →</a><a class="btn secondary" href="https://discord.gg/casZHtca6" target="_blank" rel="noopener">Abrir suporte / ticket →</a><a class="btn secondary" href="#inicio">Voltar ao início</a></div>
+ </div>
+</div>
+</section>
+</main>
+
+<footer>
+ <div class="container footer-inner">
+  <div><span class="footer-brand">[STAFF] 𝐁𝐋𝐀𝐂𝐊</span><br>Controle. Organização. Segurança.</div>
+  <div class="footer-links">
+<a href="#recursos">Recursos</a>
+<a href="#sistemas">Sistemas</a>
+<a href="#seguranca">Segurança</a>
+<a href="#equipe">Equipe</a>
+<a href="#documentacao">Documentação</a>
+<a href="https://discord.gg/casZHtca6" target="_blank" rel="noopener">Servidor Discord</a>
+</div>
+  <div>© <span id="year"></span> STAFF BLACK</div>
+ </div>
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+document.querySelectorAll('.nav-links a').forEach(a=>a.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('open')));
+</script>
+</body>
+</html>
